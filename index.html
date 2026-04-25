@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Data Directory — A Hitherto Project</title>
+  <meta name="description" content="High-quality, non-corporate data sources from academic institutions, governments, and non-profits. Curated for researchers, analysts, and builders." />
+  <meta property="og:title" content="Open Data Directory" />
+  <meta property="og:description" content="Vetted, non-corporate data sources for researchers, analysts, and AI builders. Curated by Hitherto." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --surface: #ffffff;
+      --border: rgba(0,0,0,0.09);
+      --border-mid: rgba(0,0,0,0.14);
+      --text-primary: #1a1a18;
+      --text-secondary: #555550;
+      --text-muted: #888882;
+      --accent: #2a6e4e;
+      --accent-light: #eaf4ef;
+      --accent-text: #1d5038;
+      --blue-bg: #eef4fc;
+      --blue-text: #1a4a7a;
+      --purple-bg: #f0eefe;
+      --purple-text: #3d318c;
+      --teal-bg: #e5f4ee;
+      --teal-text: #0e5238;
+      --amber-bg: #fdf3e0;
+      --amber-text: #6b3f08;
+      --red-bg: #fdecea;
+      --red-text: #7a1f1f;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font: 'DM Sans', system-ui, sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --surface: #1e1e1b;
+        --border: rgba(255,255,255,0.08);
+        --border-mid: rgba(255,255,255,0.13);
+        --text-primary: #f0ede6;
+        --text-secondary: #a8a49c;
+        --text-muted: #6a6760;
+        --accent: #4cad7d;
+        --accent-light: #1a3328;
+        --accent-text: #7dd4a8;
+        --blue-bg: #152038;
+        --blue-text: #90b8e8;
+        --purple-bg: #1e1840;
+        --purple-text: #b0a0f0;
+        --teal-bg: #0e2e22;
+        --teal-text: #72c9a0;
+        --amber-bg: #2a1e08;
+        --amber-text: #e8b870;
+        --red-bg: #2a1010;
+        --red-text: #e08080;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 17px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .site-logo {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-logo .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .site-logo .parent {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 13px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .kofi-wrap img {
+      height: 32px;
+      border: 0;
+      display: block;
+    }
+
+    /* ── MAIN ── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .page-hero {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .page-hero h1 {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+
+    .page-hero p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 580px;
+      line-height: 1.65;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .tab {
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s;
+    }
+
+    .tab:hover { color: var(--text-primary); }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .search-input {
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 9px 14px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text-primary);
+      flex: 1;
+      min-width: 220px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill {
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .pill:hover { background: var(--bg); color: var(--text-primary); }
+
+    .pill.active {
+      background: var(--accent-light);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    /* ── COUNT ── */
+    .count {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover {
+      border-color: var(--border-mid);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-name {
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .card-name a {
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .card-name a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .trust {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 99px;
+      white-space: nowrap;
+      align-self: flex-start;
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    .trust-gov { background: var(--blue-bg); color: var(--blue-text); }
+    .trust-edu { background: var(--teal-bg); color: var(--teal-text); }
+    .trust-npo { background: var(--purple-bg); color: var(--purple-text); }
+    .trust-int { background: var(--accent-light); color: var(--accent-text); }
+
+    .card-org {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .card-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .card-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    /* ── SUGGEST ROW ── */
+    .suggest-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 1.5rem 0 2rem;
+      flex-wrap: wrap;
+    }
+
+    .suggest-row p {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .btn-outline {
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.15s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── VET / TIPS PAGES ── */
+    .content-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .content-section h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .content-section > p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+      max-width: 660px;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .check-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .icon-green { background: var(--teal-bg); color: var(--teal-text); }
+    .icon-blue { background: var(--blue-bg); color: var(--blue-text); }
+    .icon-amber { background: var(--amber-bg); color: var(--amber-text); }
+    .icon-red { background: var(--red-bg); color: var(--red-text); }
+
+    .check-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .check-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 14px;
+    }
+
+    .tip-card h3 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .tip-card > p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .data-table td {
+      padding: 10px 12px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: var(--bg); }
+
+    .callout {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 12px 16px;
+      margin-top: 14px;
+    }
+
+    .callout p {
+      font-size: 14px;
+      color: var(--accent-text);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      margin-top: 4rem;
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .footer-left a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-left a:hover { color: var(--accent); text-decoration: underline; }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .site-header { padding: 0 1rem; }
+      .container { padding: 0 1rem; }
+      .page-hero h1 { font-size: 1.6rem; }
+      .grid { grid-template-columns: 1fr; }
+      .tab { font-size: 14px; padding: 9px 14px; }
+      .site-footer { padding: 1.5rem 1rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <a class="site-logo" href="/">
+    <span class="dot"></span>
+    Open Data Directory
+    <span class="parent">a Hitherto project</span>
+  </a>
+  <div class="header-right">
+    <a class="kofi-wrap" href="https://ko-fi.com/F2F81YFSMY" target="_blank" rel="noopener" title="Support this project on Ko-fi">
+      <img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com" />
+    </a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+  <div class="container">
+
+    <div class="page-hero">
+      <h1>Open Data Directory</h1>
+      <p>High-quality, non-corporate data sources from academic institutions, governments, and non-profits — curated for researchers, analysts, and builders.</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('sources', this)">Sources</button>
+      <button class="tab" onclick="showTab('vet', this)">How to vet a source</button>
+      <button class="tab" onclick="showTab('tips', this)">Pro tips</button>
+    </div>
+
+    <!-- ── SOURCES TAB ── -->
+    <div id="tab-sources">
+      <div class="controls">
+        <input class="search-input" type="text" id="search" placeholder="Search by name, topic, or organization..." oninput="render()" />
+        <div class="pill-row" id="cats"></div>
+      </div>
+      <div class="count" id="count"></div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" style="display:none">No sources match — try a different filter or search term.</div>
+      <div class="suggest-row">
+        <p>Know a source that belongs here?</p>
+        <a class="btn-outline" href="mailto:hello@hitherto.ai?subject=Open Data Directory — Source Suggestion">Suggest a source →</a>
+      </div>
+    </div>
+
+    <!-- ── VET TAB ── -->
+    <div id="tab-vet" style="display:none">
+      <div class="content-section">
+        <h2>Quick vetting checklist</h2>
+        <p>Before trusting any data source, run through these checks. They take about two minutes and will save you from building on shaky foundations.</p>
+        <div class="checklist">
+          <div class="check-item">
+            <div class="check-icon icon-blue">1</div>
+            <div>
+              <div class="check-label">Check the domain</div>
+              <div class="check-desc">.gov (government), .edu (university), and .org (non-profit) are generally safer than .com. Not all .orgs are trustworthy, but if it's a .com leading with "enterprise solutions" or requiring a business email to access anything, be skeptical.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-green">2</div>
+            <div>
+              <div class="check-label">Look for a DOI</div>
+              <div class="check-desc">Reputable datasets almost always carry a Digital Object Identifier — a permanent academic ID that looks like 10.5281/zenodo.123456. No DOI on a research dataset is a yellow flag worth investigating.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-green">3</div>
+            <div>
+              <div class="check-label">Check the license</div>
+              <div class="check-desc">Look for CC0 (public domain — fully free to use) or CC BY (free with attribution). These allow reuse without fees or legal risk. Avoid sources with no stated license or vague "terms of use" that could restrict your work downstream.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-amber">4</div>
+            <div>
+              <div class="check-label">Read the About page</div>
+              <div class="check-desc">If it talks about "research," "science," and "open access" — good sign. If it leads with "solutions," "partners," or "enterprise" — proceed with caution. The most important question: who funds it, and do they have an interest in the findings?</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-amber">5</div>
+            <div>
+              <div class="check-label">Check for methodology documentation</div>
+              <div class="check-desc">A trustworthy dataset explains how the data was collected, by whom, when, and what its known limitations are. No methodology section means you cannot assess quality or bias — which means you cannot responsibly use it.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-red">6</div>
+            <div>
+              <div class="check-label">Watch for red flags</div>
+              <div class="check-desc">Be wary of: data that perfectly supports a company's own product claims, no named authors or institutions, no date or update history, "proprietary methodology" with no explanation, and paywalled previews designed to upsell you on the full dataset.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>Vetting in the wild</h2>
+        <p>You'll often encounter data sources through social posts, articles, or someone citing a statistic. Here's how to trace it back to its origin before using it.</p>
+        <div class="checklist">
+          <div class="check-item">
+            <div class="check-icon icon-blue">→</div>
+            <div>
+              <div class="check-label">Always find the primary source</div>
+              <div class="check-desc">Never trust a statistic from the article that cited it — go upstream. Search for the original study, report, or dataset. If the article doesn't link directly to it, that's already a problem worth noting.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-blue">→</div>
+            <div>
+              <div class="check-label">Check re3data or DataONE for unknown repositories</div>
+              <div class="check-desc">If someone cites a repository you don't recognize, look it up on re3data.org — the global registry of vetted research repositories. If it isn't listed there, research it before trusting it.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-blue">→</div>
+            <div>
+              <div class="check-label">Check who funded the research</div>
+              <div class="check-desc">Funding source matters. NSF, NIH, EU Horizon, and government grants require conflict-of-interest disclosure. Corporate-funded research often does not. Always check the paper's acknowledgments section before treating findings as neutral.</div>
+            </div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon icon-blue">→</div>
+            <div>
+              <div class="check-label">"Available on request" is a red flag</div>
+              <div class="check-desc">If a paper lists its data as "available upon reasonable request" rather than linking to a named repository, the data may be lost, restricted, or never properly organized for sharing. Prioritize papers with named, accessible repositories.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TIPS TAB ── -->
+    <div id="tab-tips" style="display:none">
+
+      <div class="tip-card">
+        <h3>How much data do you actually need?</h3>
+        <p>A common trap in data projects: downloading everything and figuring out what you need later. Estimating your requirements upfront saves time, storage, and scope creep.</p>
+        <table class="data-table">
+          <thead><tr><th>Task type</th><th>Typical data volume</th><th>What matters most</th></tr></thead>
+          <tbody>
+            <tr><td>Exploratory analysis</td><td>A representative sample (5–10%) is usually enough to start</td><td>Coverage, not completeness</td></tr>
+            <tr><td>Training a model</td><td>Depends heavily on task — classification needs far less than generation</td><td>Quality over quantity; label accuracy</td></tr>
+            <tr><td>Statistical research</td><td>Determined by required statistical power — often less than you think</td><td>Methodology documentation, sampling method</td></tr>
+            <tr><td>Benchmarking</td><td>Standardized test sets (often fixed sizes)</td><td>Reproducibility, established baseline</td></tr>
+            <tr><td>Policy or journalism</td><td>Whatever the primary source published</td><td>Provenance and recency</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><p>Rule of thumb: if you can clearly state your research question, you can usually define the minimum data you need to answer it. Start small, validate your approach, then scale.</p></div>
+      </div>
+
+      <div class="tip-card">
+        <h3>What file formats signal about a dataset</h3>
+        <p>The format a dataset comes in can tell you a lot about how it was intended to be used — and how much cleanup work lies ahead.</p>
+        <table class="data-table">
+          <thead><tr><th>Format</th><th>What it signals</th><th>Watch out for</th></tr></thead>
+          <tbody>
+            <tr><td>CSV / TSV</td><td>Research-ready, widely interoperable — generally a good sign</td><td>No schema docs, encoding issues</td></tr>
+            <tr><td>JSON / JSON-LD</td><td>Modern and structured — common in APIs and linked data</td><td>Nested structures that require flattening</td></tr>
+            <tr><td>Parquet / Arrow</td><td>Optimized for large-scale analysis — serious, intentional data</td><td>Requires specific tooling (pandas, Spark, DuckDB)</td></tr>
+            <tr><td>Excel (.xlsx)</td><td>Often manually curated — may have formatting embedded as data</td><td>Merged cells, color-coded meaning, hidden rows</td></tr>
+            <tr><td>PDF tables</td><td>Data not intended for reuse — extracted from reports</td><td>Significant cleaning work; extraction errors common</td></tr>
+            <tr><td>Proprietary formats</td><td>Vendor lock-in risk</td><td>May require paid software or export tools to access</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip-card">
+        <h3>When to use a meta-search tool vs. a repository directly</h3>
+        <p>Two different strategies depending on how well you know what you're looking for.</p>
+        <table class="data-table">
+          <thead><tr><th>Situation</th><th>Best approach</th></tr></thead>
+          <tbody>
+            <tr><td>You know the exact dataset or repository</td><td>Go directly to the source — faster, no noise</td></tr>
+            <tr><td>You know the topic but not the source</td><td>Use Google Dataset Search or re3data to discover options</td></tr>
+            <tr><td>You want broad coverage across a field</td><td>Use DataONE (environmental) or OpenAlex (publications) for federated search</td></tr>
+            <tr><td>You need data linked to a peer-reviewed paper</td><td>Check Dryad or Zenodo — both require DOI linkage</td></tr>
+            <tr><td>You need government statistics</td><td>Start at Data.gov (US), Eurostat (EU), or UN Data for international</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip-card">
+        <h3>Open license cheat sheet</h3>
+        <p>Not all open licenses are equal. Here's what each one means for your project.</p>
+        <table class="data-table">
+          <thead><tr><th>License</th><th>Can you use it?</th><th>Attribution required?</th><th>Commercial use?</th></tr></thead>
+          <tbody>
+            <tr><td>CC0 (Public Domain)</td><td>Yes, fully</td><td>No (but good practice)</td><td>Yes</td></tr>
+            <tr><td>CC BY 4.0</td><td>Yes</td><td>Yes — cite the source</td><td>Yes</td></tr>
+            <tr><td>CC BY-SA</td><td>Yes</td><td>Yes — share-alike required</td><td>Yes, with same license</td></tr>
+            <tr><td>CC BY-NC</td><td>Yes for research</td><td>Yes</td><td>No commercial use</td></tr>
+            <tr><td>ODC-ODbL</td><td>Yes</td><td>Yes — derivative databases must be open</td><td>Yes</td></tr>
+            <tr><td>No license stated</td><td>Unclear — contact the owner</td><td>N/A</td><td>Assume no</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <!-- end tabs -->
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-left">
+    <p>Open Data Directory is a <a href="https://hitherto.ai" target="_blank" rel="noopener">Hitherto</a> project. Curated by humans, for humans.</p>
+    <p style="margin-top:4px">Sources are vetted for independence, open licensing, and methodological transparency.</p>
+  </div>
+  <div class="footer-right">
+    <a href="https://ko-fi.com/F2F81YFSMY" target="_blank" rel="noopener">
+      <img height="32" style="border:0;height:32px;display:block" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com" />
+    </a>
+  </div>
+</footer>
+
+<script>
+const SOURCES = [
+  {name:"Zenodo",url:"https://zenodo.org",trust:"npo",org:"CERN / OpenAIRE",desc:"General-purpose open repository accepting any research output — datasets, software, papers. Widely trusted across disciplines.",tags:["multidisciplinary","DOI","CC0"],license:"CC0 / CC BY",domain:".org"},
+  {name:"OpenAlex",url:"https://openalex.org",trust:"npo",org:"OurResearch",desc:"Open catalog of 240M+ scientific publications with full metadata. Free under CC0 — ideal for analyzing the global research landscape without corporate paywalls.",tags:["publications","bibliometrics","CC0"],license:"CC0",domain:".org"},
+  {name:"Dryad",url:"https://datadryad.org",trust:"npo",org:"Dryad (non-profit)",desc:"Curated repository for research-linked datasets, especially life and biological sciences. All data is linked to peer-reviewed publications.",tags:["life sciences","curated","biology"],license:"CC0",domain:".org"},
+  {name:"DataONE",url:"https://www.dataone.org",trust:"edu",org:"University of New Mexico + partners",desc:"Federated network of 44+ repositories covering 800K+ environmental and earth science datasets from research centers and governments.",tags:["environment","earth science","federated"],license:"Varies",domain:".org"},
+  {name:"re3data",url:"https://www.re3data.org",trust:"edu",org:"KIT / Helmholtz",desc:"Global registry of research data repositories across all disciplines. The quality-filtered search engine for finding vetted data stores.",tags:["registry","meta-search","all disciplines"],license:"CC BY",domain:".org"},
+  {name:"Google Dataset Search",url:"https://datasetsearch.research.google.com",trust:"gov",org:"Google (indexes gov/edu sources)",desc:"Indexes datasets using schema.org markup. Pulls from Data.gov, university repositories, and Figshare — a practical way to find raw data from reliable sources.",tags:["search","multidisciplinary","aggregator"],license:"Varies",domain:".com"},
+  {name:"Data.gov",url:"https://data.gov",trust:"gov",org:"U.S. Federal Government",desc:"Central hub for U.S. government open data. Millions of datasets spanning climate, economics, health, census data, and more. Legally mandated to be public.",tags:["US government","policy","census"],license:"Public Domain",domain:".gov"},
+  {name:"EU Open Data Portal",url:"https://data.europa.eu",trust:"gov",org:"European Union",desc:"Official open data from EU institutions and member states — legislation, economics, environment, and regional statistics.",tags:["EU","government","economics"],license:"CC BY",domain:".eu"},
+  {name:"World Bank Open Data",url:"https://data.worldbank.org",trust:"int",org:"World Bank Group",desc:"Hundreds of time-series economic, poverty, and development datasets for virtually every country. No sales pitch — just numbers going back decades.",tags:["economics","global","time-series"],license:"CC BY 4.0",domain:".org"},
+  {name:"IMF Data",url:"https://www.imf.org/en/Data",trust:"int",org:"International Monetary Fund",desc:"Finance, trade, and macroeconomic indicators across member countries. The gold standard for global economic research.",tags:["finance","macroeconomics","global"],license:"Public Domain",domain:".org"},
+  {name:"UN Data",url:"https://data.un.org",trust:"int",org:"United Nations",desc:"Single entry point for statistical data from the full UN system — WHO, UNESCO, and more. Covers crime, education, health, and population globally.",tags:["UN","global","health","education"],license:"Varies",domain:".org"},
+  {name:"OpenNeuro",url:"https://openneuro.org",trust:"edu",org:"Stanford / NSF-funded",desc:"Free platform for sharing neuroimaging data — MRI, EEG, MEG. Run by academic researchers and funded by the National Science Foundation.",tags:["neuroscience","MRI","EEG"],license:"CC0",domain:".org"},
+  {name:"GBIF",url:"https://www.gbif.org",trust:"int",org:"Intergovernmental (80+ countries)",desc:"Billions of biodiversity records from museums, universities, and citizen scientists worldwide. Internationally government-funded and fully open.",tags:["biodiversity","ecology","species"],license:"CC BY",domain:".org"},
+  {name:"COKI Open Access Dataset",url:"https://zenodo.org/record/6399463",trust:"edu",org:"Curtin Open Knowledge Initiative",desc:"Open access performance data for 225 countries and 50,000 institutions. Created by Curtin University, hosted on Zenodo.",tags:["open access","publishing","bibliometrics"],license:"CC BY 4.0",domain:".org"},
+  {name:"Harvard Dataverse",url:"https://dataverse.harvard.edu",trust:"edu",org:"Harvard University",desc:"One of the largest academic data repositories in the world, spanning all disciplines. Robust DOI assignment and long-term preservation commitment.",tags:["multidisciplinary","academic","DOI"],license:"CC0 / CC BY",domain:".edu"},
+  {name:"ICPSR",url:"https://www.icpsr.umich.edu",trust:"edu",org:"University of Michigan",desc:"Largest archive of digital social science data. 15,000+ studies on economics, education, aging, criminal justice, and more. Running since 1962.",tags:["social science","demography","criminal justice"],license:"Varies",domain:".edu"},
+  {name:"CDC WONDER",url:"https://wonder.cdc.gov",trust:"gov",org:"U.S. Centers for Disease Control",desc:"Public health and epidemiology data from the CDC — mortality, natality, cancer statistics, and environmental exposures. Free and openly queryable.",tags:["public health","epidemiology","US"],license:"Public Domain",domain:".gov"},
+  {name:"NASA Earthdata",url:"https://earthdata.nasa.gov",trust:"gov",org:"NASA",desc:"Earth observation data from NASA satellites covering atmosphere, land, ocean, and cryosphere. Petabytes of raw scientific data, free with registration.",tags:["earth observation","climate","remote sensing"],license:"Public Domain",domain:".gov"},
+  {name:"NOAA Climate Data",url:"https://www.ncei.noaa.gov",trust:"gov",org:"NOAA / U.S. Government",desc:"Authoritative climate and weather records — historical temperature, precipitation, storm data, and sea level going back well over a century.",tags:["climate","weather","historical"],license:"Public Domain",domain:".gov"},
+  {name:"Eurostat",url:"https://ec.europa.eu/eurostat",trust:"gov",org:"European Commission",desc:"Statistical office of the EU providing harmonized, comparable statistics across member states — economy, population, agriculture, and environment.",tags:["EU","statistics","economy"],license:"CC BY 4.0",domain:".eu"},
+  {name:"Our World in Data",url:"https://ourworldindata.org",trust:"npo",org:"University of Oxford / non-profit",desc:"Research-backed data on global development, health, energy, poverty, and more. All underlying datasets are free to download with full source documentation.",tags:["global","development","health","energy"],license:"CC BY",domain:".org"},
+  {name:"Figshare",url:"https://figshare.com",trust:"npo",org:"Digital Science (non-profit arm)",desc:"Open repository for research figures, datasets, media, and posters. Integrated with major journals and institutions worldwide.",tags:["multidisciplinary","media","DOI"],license:"CC BY / CC0",domain:".com"},
+  {name:"PhysioNet",url:"https://physionet.org",trust:"edu",org:"MIT / NIH",desc:"Repository of physiological and clinical data — ECG, EEG, and ICU records. The gold standard for biomedical signal processing research.",tags:["biomedical","clinical","ECG"],license:"Varies (open)",domain:".org"},
+  {name:"IPUMS",url:"https://ipums.org",trust:"edu",org:"University of Minnesota",desc:"Harmonized census and survey microdata for the US and global populations across 150+ years. Designed specifically for reproducible social research.",tags:["census","demography","social science"],license:"Varies",domain:".org"},
+  {name:"OpenStreetMap",url:"https://www.openstreetmap.org",trust:"npo",org:"OpenStreetMap Foundation",desc:"Community-built, freely editable map of the world with full geographic data export. The non-corporate alternative to proprietary mapping data.",tags:["geospatial","mapping","community"],license:"ODbL",domain:".org"},
+  {name:"Common Crawl",url:"https://commoncrawl.org",trust:"npo",org:"Common Crawl Foundation",desc:"Petabyte-scale web crawl data freely available to everyone. Widely used in NLP and AI research as a foundational open training corpus.",tags:["NLP","web data","AI research"],license:"CC0",domain:".org"},
+  {name:"PubChem",url:"https://pubchem.ncbi.nlm.nih.gov",trust:"gov",org:"NIH / National Library of Medicine",desc:"The world's largest free chemistry database — compound structures, biological activities, and safety data on hundreds of millions of substances.",tags:["chemistry","biology","compounds"],license:"Public Domain",domain:".gov"},
+  {name:"OECD Data",url:"https://data.oecd.org",trust:"int",org:"OECD",desc:"Comparable economic and social statistics across member countries — education, health, labor markets, trade, and governance indicators.",tags:["economics","education","OECD","policy"],license:"CC BY",domain:".org"},
+];
+
+const CATS = ["All","Government","Non-profit","Academic","Intergovernmental","Environment","Health","Economics","AI / NLP","Geospatial"];
+const TRUST_MAP = {gov:"Government",npo:"Non-profit",edu:"Academic",int:"Intergovernmental"};
+const TRUST_LABEL = {gov:"Gov",npo:"Non-profit",edu:"Academic",int:"Intergovernmental"};
+let activeTag = "All";
+
+function buildPills() {
+  const row = document.getElementById("cats");
+  CATS.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "pill" + (c === "All" ? " active" : "");
+    b.textContent = c;
+    b.onclick = () => {
+      activeTag = c;
+      document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+      b.classList.add("active");
+      render();
+    };
+    row.appendChild(b);
+  });
+}
+
+function matches(s) {
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const catMap = {
+    "AI / NLP": ["NLP","AI","web data"],
+    "Geospatial": ["geospatial","mapping"],
+    "Environment": ["environment","earth science","climate","weather","biodiversity","ecology","remote sensing"],
+    "Health": ["health","epidemiology","biomedical","clinical","ECG","MRI","EEG","neuroscience"],
+    "Economics": ["economics","finance","macroeconomics","OECD","policy","trade"],
+  };
+  let catMatch = false;
+  if (activeTag === "All") catMatch = true;
+  else if (catMap[activeTag]) catMatch = s.tags.some(t => catMap[activeTag].some(k => t.toLowerCase().includes(k.toLowerCase())));
+  else catMatch = TRUST_MAP[s.trust] === activeTag;
+  const textMatch = !q || s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q) || s.tags.some(t => t.toLowerCase().includes(q)) || s.org.toLowerCase().includes(q);
+  return catMatch && textMatch;
+}
+
+function render() {
+  const filtered = SOURCES.filter(matches);
+  document.getElementById("count").textContent = filtered.length + " sources";
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  if (!filtered.length) { grid.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  grid.innerHTML = filtered.map(s => `
+    <div class="card">
+      <div class="card-top">
+        <span class="card-name"><a href="${s.url}" target="_blank" rel="noopener">${s.name}</a></span>
+        <span class="trust trust-${s.trust}">${TRUST_LABEL[s.trust]}</span>
+      </div>
+      <div class="card-org">${s.org}</div>
+      <div class="card-desc">${s.desc}</div>
+      <div class="card-tags">${s.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="card-meta">
+        <span>License: ${s.license}</span>
+        <span>Domain: ${s.domain}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = "none");
+  document.getElementById("tab-" + id).style.display = "block";
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+buildPills();
+render();
+</script>
+</body>
+</html>
